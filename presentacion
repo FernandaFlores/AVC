@@ -8,11 +8,11 @@ exd <- data.frame(ID = factor(1:6), Group = gl(2, 3),
                   matrix(rpois(6 * 4, lambda = 10), nrow = 6))
 colnames(exd)[-(1:2)] <- paste("Day", c(1, 2, 5, 7), sep = ".")
 ex_wide <- exd
-ex_wide
+View(ex_wide)
 
 #REMODELAR
-reshape(ex_wide, direction = "long", idvar = "ID", 
-        varying = colnames(ex_wide)[-(1:2)])
+View(reshape(ex_wide, direction = "long", idvar = "ID", 
+             varying = colnames(ex_wide)[-(1:2)]))
 
 #CONJUNTOS DE DATOS
 "timber" <-
@@ -101,14 +101,12 @@ View(timber)
            3.5, 3.2999999999999998, 3.7999999999999998)
          , nrow = 33, ncol = 8
          ,  dimnames = list(character(0)
-                            , c("T0.0", "T0.5", "T1.0", "T1.5", "T2.0", "T2.5", "T3.0", "T4.0")
-         )
-  )
+                            , c("T0.0", "T0.5", "T1.0", "T1.5", "T2.0", "T2.5", "T3.0", "T4.0")))
 
 time <- c(0, 0.5, 1, 1.5, 2, 3, 4)
 plasma <- as.data.frame(plasma)
-plasma$Subject <- factor(paste("id", 
-                               formatC(1:nrow(plasma), format = "g", width = 2, flag = "0"), sep = ""))
+plasma$Subject <- factor(paste("id", formatC(1:nrow(plasma), 
+                      format = "g", width = 2, flag = "0"), sep = ""))
 plasma$group <- factor(c(rep("control", 20), rep("obese", 13)))
 
 plasma <- reshape(plasma, direction = "long", idvar = "Subject",
@@ -119,7 +117,7 @@ colnames(plasma)[4] <- "plasma"
 View(plasma)
 
 
-#intercepto aleatorio y modelos de intersección y de pendiente aleatorios para los datos de deslizamiento de la madera (TIMBER)
+#intercepto aleatorio (TIMBER)
 summary(lm(loads ~ slippage, data = timber))
 
 #La aplicación de la intersección aleatoria y el intercepto aleatorio y modelos de pendiente a los datos de deslizamiento de la madera
@@ -131,8 +129,8 @@ timber.lme1 <- lme(loads ~ slippage,
                    random = ~slippage | specimen,
                    data = timber, method = "ML")
 
-xyplot(loads ~ slippage | specimen, data = timber,
-       layout = c(4, 2))
+plot(xyplot(loads ~ slippage | specimen, data = timber,
+            layout = c(4, 2)))
 exactRLRT(timber.lme)
 
 anova(timber.lme, timber.lme1)
@@ -197,7 +195,6 @@ plot(xyplot(cbind(plasma, pred2) ~ time | Subject, data = plasma, groups = group
 res.int <- random.effects(plasma.lme2)[,1]
 res.slope <- random.effects(plasma.lme2)[,2]
 
-layout.show(3)
 qqnorm(res.int,ylab="Estimated random intercepts",main="Random intercepts")
 qqnorm(res.slope,ylab="Estimated random slopes",main="Random slopes")
 resids<-resid(plasma.lme2) 
@@ -205,7 +202,6 @@ qqnorm(resids,ylab="Estimated residuals",main="Residuals")
 
 
 #ABANDONOS EN DATOS LONGITUDINALES
-layout(1)
 BtheB$subject <- factor(rownames(BtheB))
 nobs <- nrow(BtheB)
 BtheB_long <- reshape(BtheB, idvar = "subject",
